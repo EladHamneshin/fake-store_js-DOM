@@ -1,7 +1,9 @@
 let data = [];
-const productsElements = []; // {productCard, product}
+let productsElements = []; // {productCard, product}
 const categoriesBtns = [];
 const categories = ['All categories', 'Men', 'Women', 'Jewelery', 'Electronics'];
+const URL = 'https://fake-store-mq2a.onrender.com'
+const PRODUCT_ENDPOINT = '/products'
 /*----------------- DOM Elements creators ------------------------------*/
 
 function createElement(tag, innerText=''){
@@ -383,14 +385,28 @@ function editProductPageSubmitHandler(event, product, form){
     const productQuantity = form.querySelector('#product-quantity-input').value;
     const productDescription = form.querySelector('#product-description-input').value;
 
-    product.title = productTitle;
-    product.category = productCategory;
-    product.price = productPrice;
-    product.image = productImage;
-    product.quantity = productQuantity;
-    product.description = productDescription;
+    const editedProduct = {
+        id: product.id,
+        title: productTitle,
+        category: productCategory,
+        price: productPrice,
+        image: productImage,
+        quantity: productQuantity,
+        description: productDescription
+    };
 
-    backHome();
+    putProduct(editedProduct).then(res => {
+        product.title = productTitle;
+        product.category = productCategory;
+        product.price = productPrice;
+        product.image = productImage;
+        product.quantity = productQuantity;
+        product.description = productDescription;
+    
+        backHome();
+    }).catch(err => console.log(err));
+
+    
 }
 
 function addProductPageSubmitHandler(event, form){
@@ -424,14 +440,6 @@ function addProductPageSubmitHandler(event, form){
 
 
 /*------------------------------------------------------------------------------------------ */
-
-function addRandomQuantity(products){
-    products.forEach(product => {
-        product.quantity = Math.floor(Math.random() * 100);
-        return product;
-    });
-}
-
 function emptyMain(){
     searchLine.remove();
     while(main.firstChild){
@@ -455,46 +463,30 @@ function backHome(){
 
 /*----------------------------------- Server request ---------------------------------*/
 async function getProducts(){
-    const response = await fetch('http://127.0.0.1:3000/products?id=1');
+    const response = await fetch(`${URL}${PRODUCT_ENDPOINT}`);
     const products = await response.json();
     return products;
 }
 
 async function postProduct(product){
-    const response = await fetch('http://127.0.0.1:3000/products', {method: 'POST', headers: { "Content-Type": "application/json",}, body: JSON.stringify(product)});
+    const response = await fetch(`${URL}${PRODUCT_ENDPOINT}`, {method: 'POST', headers: { "Content-Type": "application/json",}, body: JSON.stringify(product)});
     const newProduct = await response.json();
     return newProduct;
 }
 
 async function putProduct(product){
-    const response = await fetch(`http://127.0.0.1:3000/products/${product.id}`, {method: 'PUT', headers: { "Content-Type": "application/json",}, body: JSON.stringify(product)});
+    const response = await fetch(`${URL}${PRODUCT_ENDPOINT}/${product.id}`, {method: 'PUT', headers: { "Content-Type": "application/json",}, body: JSON.stringify(product)});
     const updatedProduct = await response.json();
     return updatedProduct;
 }
 
 async function deleteProduct(product){
-    const response = await fetch(`http://127.0.0.1:3000/products/${product.id}?id=1`, {method: 'DELETE'});
+    const response = await fetch(`${URL}${PRODUCT_ENDPOINT}/${product.id}`, {method: 'DELETE'});
     const deletedProduct = await response.json();
     return deletedProduct;
 }
 
 
-
-
-/*-----------------------------------  main  -----------------------------------------*/
-// addRandomQuantity(data);
-// const root = document.getElementsByClassName('root')[0];
-// const productsElements = []; // {productCard, product}
-// const categoriesBtns = [];
-// const categories = ['All categories', 'Men', 'Women', 'Jewelery', 'Electronics'];
-// const searchLine = createSearchLine();
-// const productsContainer = createProductCards(data);
-// const header = createHeader();
-// const main = document.createElement('main');
-// const h = createElement('h1', 'Products');
-// const footer = createFooter();
-// main.append(h, productsContainer);
-// root.append(header, searchLine, main , footer);
 
 
 /*-----------------------------------  main  -----------------------------------------*/

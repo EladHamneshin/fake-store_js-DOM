@@ -99,8 +99,6 @@ header i{
     justify-content: flex-start;
     align-items: center;
     padding: 10px;
-    height: 50px;
-    flex-grow: 0.4;
 }
 
 
@@ -146,7 +144,7 @@ main{
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 100%;
-    margin: 10px 0  0 0;
+    margin: 10px 0 0 0;
     padding: 0;
 }
 
